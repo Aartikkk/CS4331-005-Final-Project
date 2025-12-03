@@ -1,0 +1,14 @@
+sequence_path: "2011_09_26_drive_0005_sync"
+calib_file: "2011_09_26/calib_cam_to_cam.txt"
+camera_id: "image_00"
+
+use_kalman_smoothing: true
+
+feature:
+  orb_nfeatures: 2000
+  orb_scaleFactor: 1.2
+  orb_levels: 8
+
+ransac:
+  threshold: 1.0
+  prob: 0.999

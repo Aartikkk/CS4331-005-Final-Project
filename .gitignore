@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+.env/
+
+# Big data / KITTI
+2011_09_26_drive_0005_sync/
+2011_09_26/
+results/
+outputs/
+*.png
+*.jpg
+
+# VS Code
+.vscode/
