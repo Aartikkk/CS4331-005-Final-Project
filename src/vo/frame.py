@@ -1,5 +1,4 @@
-"""Frame representation (placeholder)."""
-
+# simple frame class
 class Frame:
     def __init__(self, image=None, pose=None):
         self.image = image

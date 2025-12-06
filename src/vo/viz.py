@@ -2,14 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D  
 
-# Helper: Compute camera positions + heading vectors
+# headings from 4x4 poses
 def _compute_headings_from_poses(poses: list[np.ndarray]):
-    """
-    Given a list of 4x4 poses (world_T_cam), return:
-      - positions: Nx3
-      - headings: Nx3 (camera forward direction in world frame)
-    Camera forward axis is +Z in camera frame.
-    """
+    """Return camera positions and forward headings."""
+
     positions = []
     headings = []
     forward_cam = np.array([0.0, 0.0, 1.0])  # camera z-axis
@@ -77,7 +73,7 @@ def plot_trajectory_with_orientations(
     plt.legend()
 
     if save_path:
-        plt.savefig(save_path, dpi=150)
+        plt.savefig(save_path, dpi=600)
 
     plt.show()
 
@@ -126,7 +122,7 @@ def plot_orientations_only(
     plt.legend()
 
     if save_path:
-        plt.savefig(save_path, dpi=150)
+        plt.savefig(save_path, dpi=600)
 
     plt.show()
 
@@ -183,7 +179,7 @@ def plot_frustums(
     plt.axis("equal")
 
     if save_path:
-        plt.savefig(save_path, dpi=150)
+        plt.savefig(save_path, dpi=600)
 
     plt.show()
 
@@ -222,7 +218,7 @@ def plot_trajectory_3d(
             color="orange"
         )
 
-    ax.set_title("3D Camera Trajectory (X–Y–Z)")
+    ax.set_title("Final 3D Camera Trajectory (X–Y–Z Plane)")
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
@@ -230,6 +226,6 @@ def plot_trajectory_3d(
     ax.grid(True)
 
     if save_path:
-        plt.savefig(save_path, dpi=150)
+        plt.savefig(save_path, dpi=600)
 
     plt.show()

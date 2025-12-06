@@ -1,10 +1,7 @@
 import numpy as np
 
 def compute_path_length(traj: np.ndarray) -> float:
-    """
-    Compute total path length along a 3D trajectory.
-    traj: (N, 3) array of points.
-    """
+    """Total length of a 3D path"""
     if traj.shape[0] < 2:
         return 0.0
     diffs = traj[1:] - traj[:-1]
@@ -12,9 +9,7 @@ def compute_path_length(traj: np.ndarray) -> float:
     return float(segment_lengths.sum())
 
 def compute_step_stats(traj: np.ndarray) -> dict:
-    """
-    Simple statistics on step lengths.
-    """
+    """Basic stats on step lengths"""
     if traj.shape[0] < 2:
         return {"mean_step": 0.0, "max_step": 0.0, "min_step": 0.0}
     diffs = traj[1:] - traj[:-1]
@@ -26,9 +21,6 @@ def compute_step_stats(traj: np.ndarray) -> dict:
     }
 
 def print_trajectory_report(traj_raw: np.ndarray, traj_smooth: np.ndarray | None = None):
-    """
-    Print some basic trajectory metrics.
-    """
     print("\nTrajectory Report")
     print(f"Frames (raw): {traj_raw.shape[0]}")
     length_raw = compute_path_length(traj_raw)

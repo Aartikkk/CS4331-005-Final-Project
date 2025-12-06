@@ -1,51 +1,65 @@
 # CS4331-005 Autonomous Driving  
 ## Final Project: KITTI Visual Localization & Trajectory Estimation
+## System Name: Monocular VO
 
-This project implements a complete **Visual Odometry (VO)** pipeline on a KITTI City sequence.  
-The objective was to build a modular VO system that estimates per-frame camera poses, constructs a global trajectory, applies trajectory optimization, and visualizes motion using multiple plots.
-
-## Dataset Used
-
-- **KITTI Raw City Dataset**
-- Sequence: **2011_09_26_drive_0005_sync**
-- Camera: **Left color camera (image_00)**
-- Calibration: Taken from `calib_cam_to_cam.txt`
-
-This sequence does **not** include official ground-truth poses (only the Odometry dataset 00–10 provides GT), so evaluation is done visually and statistically.
+This project implements **MonocularVO**, a simple but modular **monocular visual odometry (VO)** pipeline on a KITTI City sequence.  
+The system estimates per-frame camera poses, builds a global trajectory, applies a small optimization step, and visualizes the motion.
 
 ---
 
-## Features & Methods Used
-
-### **1. ORB Feature Extraction + Matching**
-- ORB keypoints (n=2000)
-- Brute-force Hamming matcher
-- Lowe’s ratio test
-
-### **2. Relative Pose Estimation**
-- Essential Matrix with RANSAC
-- Pose recovery (R, t)
-- Global pose chaining using 4×4 homogeneous matrices
-
-### **3. Trajectory Optimization (My Original Component)**
-I implemented a **3D Kalman Smoothing filter** to reduce noise in the raw VO trajectory.  
-This smooths out jitter while keeping the motion realistic.
-
-### **4. Visualization**
-Two separate trajectory plots are generated:
-
-#### **A) Raw + Smoothed + Camera Headings**  
-`saved in results/figs/trajectory_full.png`
-
-#### **B) Clean Trajectory with Start/End + Camera Orientation**  
-`saved in results/figs/trajectory_orientations_only.png`
-
-This second plot is specifically for showing orientation direction along the path.
-
+## Dataset
+- **KITTI Raw City dataset**
+- Sequence: `2011_09_26_drive_0005_sync`
+- Camera: left camera (`image_00`)
+- Calibration: `calib_cam_to_cam.txt` (uses the rectified left camera matrix to get `K`)
 ---
 
-## How to Run the Project
+## System Overview (MonocularVO)
 
+The pipeline is modular and split into small Python files under `src/vo/`:
+
+1. **ORB Feature Extraction & Matching**  
+   - ORB keypoints (default: 2000 per frame)  
+   - Brute-force matcher with Hamming distance  
+   - Lowe’s ratio test + basic filtering
+
+2. **Relative Pose Estimation (Essential Matrix)**  
+   - Uses `cv2.findEssentialMat` with RANSAC and intrinsics `K`  
+   - Recovers relative pose `(R, t)` with `cv2.recoverPose`  
+   - This gives a robust but noisy frame-to-frame motion
+
+3. **PnP-Based Pose Refinement**  
+   - Inlier matches are triangulated using `geometry.triangulate_points`  
+   - A refined pose is computed with `cv2.solvePnP` (iterative)  
+   - This reduces reprojection error and stabilizes the relative pose
+
+4. **Trajectory Composition (SE(3))**  
+   - Relative poses are converted to 4×4 matrices and chained:
+     `T_k = T_{k-1} * ΔT_k`  
+   - Implemented in `geometry.py`
+
+5. **3D Kalman Smoothing (Original Component)**  
+   - A small 3D Kalman filter (`KalmanSmoother3D` in `smoothing.py`)  
+   - Runs on translations only (rotation stays the same)  
+   - Smooths frame-to-frame jitter while keeping the overall path
+
+6. **Visualization & Statistics**  
+   - `viz.py` plots:
+     - Top-down X–Z trajectory with raw + smoothed path + heading arrows  
+     - Clean trajectory with start/end markers and orientation arrows  
+   - `optimizer.py` prints:
+     - Path length (up to scale)  
+     - Mean / min / max step sizes  
+     - Raw vs smoothed trajectory comparison  
+---
+
+## Main Script & Config
+- **Main entry point:** `scripts/run_kitti.py`  
+- **Config file:** `configs/kitti_city_0005.yaml`  
+  - Sets dataset path, ORB feature count, RANSAC threshold, smoothing parameters, etc.
+---
+
+## How to Run
 From the project root:
 
 ```bash

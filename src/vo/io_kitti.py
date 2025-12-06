@@ -13,16 +13,16 @@ class KittiLoader:
         print("CWD =", os.getcwd())
         print("sequence_path =", sequence_path)
 
-        # Construct image folder path
+        # image folder path
         self.img_dir = self.sequence_path / camera_id / "data"
         print("full image dir =", self.img_dir)
 
-        # Load all PNG images
+        # Loading all PNG images
         self.images = sorted(self.img_dir.glob("*.png"))
         if len(self.images) == 0:
             raise RuntimeError(f"No images found in {self.img_dir}")
 
-        # Load camera intrinsics
+        # Loading camera intrinsics
         self.K = self._load_intrinsics()
 
     # KITTI calibration file parser

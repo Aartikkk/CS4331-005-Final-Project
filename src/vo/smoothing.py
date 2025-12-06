@@ -2,7 +2,7 @@ import numpy as np
 
 class KalmanSmoother3D:
     """
-    Simple 3D Kalman smoother for translation only.
+    Simple 3D Kalman smoother for translation
     State: x = [X, Y, Z]^T
     Model: x_k = A x_{k-1} + w,  z_k = C x_k + v
     Here A = I, C = I  (random walk model).
@@ -25,14 +25,11 @@ class KalmanSmoother3D:
         self.initialized = False
 
     def step(self, z):
-        """
-        Run one predict+update step given a new measurement z (3D position).
-        Returns the smoothed state.
-        """
+        """One predict+update step given a 3D measurement."""
+
         z = np.asarray(z).reshape(3)
 
         if not self.initialized:
-            # On first measurement, just initialize state
             self.x = z.copy()
             self.initialized = True
             return self.x.copy()

@@ -3,6 +3,7 @@ calib_file: "2011_09_26/calib_cam_to_cam.txt"
 camera_id: "image_00"
 
 use_kalman_smoothing: true
+use_pnp_refinement: true
 
 feature:
   orb_nfeatures: 2000

@@ -4,21 +4,12 @@ from vo.geometry import triangulate_points
 
 
 def estimate_relative_pose(kp1, kp2, matches, K, ransac_thr=1.0, prob=0.999):
-    """
-    Compute relative pose using:
-      1. Essential matrix (RANSAC)
-      2. Triangulation of inliers
-      3. PnP refinement (reduces reprojection error)
-
-    Returns:
-        R_refined: 3x3 rotation
-        t_refined: 3x1 translation
-    """
+    """Estimate relative pose using E + triangulation + PnP."""
 
     if len(matches) < 8:
         return None, None
 
-    # Convert matches to 2D points
+    # matched 2D points
     pts1 = np.float32([kp1[m.queryIdx].pt for m in matches])
     pts2 = np.float32([kp2[m.trainIdx].pt for m in matches])
 
@@ -65,7 +56,6 @@ def estimate_relative_pose(kp1, kp2, matches, K, ransac_thr=1.0, prob=0.999):
         flags=cv2.SOLVEPNP_ITERATIVE
     )
 
-    # Convert Rodrigues vector to rotation matrix
     R_refined, _ = cv2.Rodrigues(Rvec)
     t_refined = tvec.reshape(3, 1)
 
