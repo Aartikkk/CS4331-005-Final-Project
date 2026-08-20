@@ -1,5 +1,4 @@
-# CS4331-005 Autonomous Driving  
-## Final Project: KITTI Visual Localization & Trajectory Estimation
+KITTI Visual Localization & Trajectory Estimation
 ## System Name: Monocular VO
 
 This project implements **MonocularVO**, a simple but modular **monocular visual odometry (VO)** pipeline on a KITTI City sequence. The system estimates per-frame camera poses, builds a global trajectory, applies a small optimization step, and visualizes the motion.
